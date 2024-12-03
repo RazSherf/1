@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE_NAME = 'flask-hello-world'
+        VERSION = "${BUILD_NUMBER}"  // Use Jenkins build number as version
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout your code from the repository
+                checkout scm
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build Docker image and tag it with the build number
+                    docker.build("${DOCKER_IMAGE_NAME}:${VERSION}")
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished'
+        }
+    }
+}
